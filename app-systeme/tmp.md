@@ -134,7 +134,7 @@ Enter directory you want to display :                                           
 whoami: extra operand ‘whoami’
 Try 'whoami --help' for more information.
 ```
-
+Ca a fonctionné à moitié, il semble que des arguments parasites empêche l'exécution de la commande
 
 ### Étape 3 : Analyse du comportement
 
