@@ -175,4 +175,4 @@ On remporte bien les points.
 
 ## 4. Comment se protéger ?
 
-Ici, l’erreur venait d’une coquille dans le code. Le fgets acceptait plus que ce que le buffer pouvait stocker. Donc la mémoire déborde et elle devient manipulable. Simplement baisser la taille accepté par le fgets ou augmenter la taille du buffer règlerait le problème.
+Ici, l’erreur venait d’une coquille dans le code. Le fgets acceptait plus que ce que le buffer pouvait stocker. Donc la mémoire déborde et elle devient manipulable. Simplement baisser la taille accepté par le fgets ou augmenter la taille du buffer règlerait le problème. Utiliser sizeof() est aussi une solution efficace.
