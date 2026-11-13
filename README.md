@@ -12,7 +12,7 @@ Les writeups sont organisés par catégories :
 
 - **`App-Systeme/`** : Exploitation de vulnérabilités binaires (Stack Overflow, Format Strings, ROP, etc.)
 - **`App-Script/`** : Élévation de privilèges et failles d'environnement en scripts (Bash, Python, etc.)
-- **`Web-Client/` & `Web-Server/`** : Fous du Web (XSS, SQLi, LFI/RFI, SSRF, etc.)
+- **`Web-Client/` & `Web-Server/`** : Web (XSS, SQLi, LFI/RFI, SSRF, etc.)
 - **`Cracking/`** : Rétro-ingénierie et reverse engineering de binaires.
 
 ---
