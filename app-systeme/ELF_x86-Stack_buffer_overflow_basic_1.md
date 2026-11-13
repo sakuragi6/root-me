@@ -164,7 +164,7 @@ drwxr-xr-x 18 root                     root             4096 déc.  10 2021 ..
 -r--------  1 root                     root              791 déc.  10 2021 ._perms
 
 cat .passwd
-1w4ntm0r3pronp1s
+****************
 ```
 
 On vérifie le mot de passe.
