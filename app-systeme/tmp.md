@@ -46,11 +46,11 @@
 
 La première étape de ce challenge va être la lecture du code. Voici les informations notables :
 
-- [Information notable 1 : allocations, tailles des buffers, types de données...]
-- [Information notable 2 : fonctions utilisées, entrées utilisateur...]
-- [Information notable 3 : restrictions, filtres ou caractères interdits...]
+- La fonction shell semble ouvrir un shell avec les privilèges root.
+- Un pointeur func vers une fonction sup() qui écrit quelque chose.
+- fgets qui récupère une entrée de maximum 132 caractères et les stocke dans un buffer de taille 128.
 
-Une première faille semble me sauter aux yeux : [Description synthétique de la vulnérabilité observée].
+Une première faille semble me sauter aux yeux : la possibilité d'écrire + que ce que le buffer peut contenir.
 
 ---
 
@@ -61,23 +61,33 @@ Une première faille semble me sauter aux yeux : [Description synthétique de la
 Tout d'abord, on va vérifier le déroulement basique du programme :
 
 ```bash
-# Exemple d'interaction et de tests initiaux
+app-systeme-ch15@challenge02:~$ ./ch15 
+hello
+Hey dude ! Waaaaazzaaaaaaaa ?!
+```
+Essayons une saisie plus longue.
+
+```bash
+app-systeme-ch15@challenge02:~$ ./ch15 
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA     
+app-systeme-ch15@challenge02:~$ ./ch15 
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+Erreur de segmentation
+app-systeme-ch15@challenge02:~$ ./ch15 
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA 
+Hey dude ! Waaaaazzaaaaaaaa ?!
+app-systeme-ch15@challenge02:~$ 
 ```
 
 On voit plusieurs cas de figures :
-- [Cas 1 : comportement normal lors d'une saisie standard]
-- [Cas 2 : réaction du binaire face aux filtres ou entrées spécifiques]
-- [Cas 3 : comportement lors d'une saisie trop longue ou anormale (Crash / Segfault)]
+- Comportement normal
+- Segfault
+- Rien en apparence.
+
 
 ### Étape 2 : Identification de la vulnérabilité
 
-[Explication des essais effectués pour tester et isoler la vulnérabilité]
-
-```bash
-# Commandes et tests de payload
-```
-
-[Analyse du résultat obtenu]
+Ici, 127 A suffisent à déborder sur la mémoire, mais un de plus est un segfault.
 
 ### Étape 3 : Analyse du comportement
 
