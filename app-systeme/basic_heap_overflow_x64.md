@@ -138,7 +138,7 @@ Ca a fonctionné à moitié, il semble que des arguments parasites empêche l'ex
 
 ### Étape 3 : Analyse du comportement
 
-On va maintenant chercher à comprendre comment ceci fonctionne. La pile suit le principe LIFO, Last In First Out. En débordant de la pile, ici un tableau statique, le dernier élément est lu. Ici, la pile est simulée par cmd, et en débordant sur la mémoire allouée par arg, on écrase le "/bin/ls -l", ici par whoami. Sauf que des arguments parasites empêche l'exécution. Mais en jetant un œil sur les caractères interdits on voit que '#' n'y est pas. Donc on peut annuler les arguments parasites en l'utilisant pour les transformer en commentaire.
+On va maintenant chercher à comprendre comment ceci fonctionne. En débordant dans le tas, ici une zone mémoire allouée et limitée, le dernier élément est lu. Ici, le tas est cmd, et en débordant sur la mémoire allouée par arg, on écrase le "/bin/ls -l", ici par whoami. Sauf que des arguments parasites empêche l'exécution. Mais en jetant un œil sur les caractères interdits on voit que '#' n'y est pas. Donc on peut annuler les arguments parasites en l'utilisant pour les transformer en commentaire et donc le shell va ignorer tout ce qui suit ce caractère.
 
 ### Étape 4 : Exploitation
 
@@ -180,4 +180,4 @@ Ici, l'erreur venait de gets qui ne vérifie pas la taille de l'entrée, donc on
 
 Pour corriger ce problème, la solution est :
 
-Vérifier la taille, et utiliser fgets pour la limiter pour pas qu'elle dépasse la taille de la mémoire allouée.
+Vérifier la taille, et utiliser fgets pour la limiter pour pas qu'elle dépasse la taille de la mémoire allouée. Et ne pas passer des chaines non filtrées dans system(), execve avec un tableau d'arguments serait plus safe
