@@ -89,5 +89,3 @@ Il suffit de traduire en ascii et le mot de passe est en poche.
 Ici, l'erreur venait de printf qui lit de manière brute ce qu'on lui envoie.
 
 Pour corriger ce problème, la solution est simplement d'afficher la variable en utilisant %s, ou bien d'utiliser puts() à la place de printf().
-
-2. \[Recommandation de sécurité / correctif 2\]
